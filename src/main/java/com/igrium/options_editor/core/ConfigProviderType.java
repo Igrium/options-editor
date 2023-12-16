@@ -3,7 +3,6 @@ package com.igrium.options_editor.core;
 import com.igrium.options_editor.vanilla.ServerConfigProvider;
 
 import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;
-import net.fabricmc.fabric.api.event.registry.RegistryAttribute;
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.SimpleRegistry;
@@ -15,7 +14,6 @@ public class ConfigProviderType<T extends ConfigProvider> {
     public static final SimpleRegistry<ConfigProviderType<?>> REGISTRY = FabricRegistryBuilder
             .<ConfigProviderType<?>>createSimple(
                     RegistryKey.ofRegistry(new Identifier("options-editor:config-provider")))
-            .attribute(RegistryAttribute.SYNCED)
             .buildAndRegister();
     
     public static final ConfigProviderType<ServerConfigProvider> SERVER = register(new Identifier("minecraft:server"),
@@ -38,5 +36,10 @@ public class ConfigProviderType<T extends ConfigProvider> {
 
     public T create(MinecraftServer server) {
         return factory.create(server);
+    }
+
+    // Empty function to force classloader
+    public static void registerDefaults() {
+
     }
 }
