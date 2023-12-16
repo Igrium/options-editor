@@ -3,7 +3,8 @@
 	"package": "com.igrium.options_editor.mixin",
 	"compatibilityLevel": "JAVA_17",
 	"mixins": [
-		"ExampleMixin"
+		"AbstractPropertiesHandlerAccessor",
+		"MinecraftDedicatedServerAccessor"
 	],
 	"injectors": {
 		"defaultRequire": 1

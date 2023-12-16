@@ -16,10 +16,10 @@
 	"environment": "*",
 	"entrypoints": {
 		"main": [
-			"com.igrium.options_editor.Optionseditor"
+			"com.igrium.options_editor.OptionsEditor"
 		],
 		"client": [
-			"com.igrium.options_editor.OptionseditorClient"
+			"com.igrium.options_editor.OptionsEditorClient"
 		]
 	},
 	"mixins": [
