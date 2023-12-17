@@ -10,9 +10,9 @@ import com.mojang.brigadier.suggestion.SuggestionProvider;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 
-import net.minecraft.server.command.ServerCommandSource;
+import net.minecraft.command.CommandSource;
 
-public class CollectionSuggestionProvider<T> implements SuggestionProvider<ServerCommandSource> {
+public class CollectionSuggestionProvider<T, S extends CommandSource> implements SuggestionProvider<S> {
     private final Collection<T> collection;
     private final Function<T, String> mappingFunction;
 
@@ -26,7 +26,7 @@ public class CollectionSuggestionProvider<T> implements SuggestionProvider<Serve
     }
 
     @Override
-    public CompletableFuture<Suggestions> getSuggestions(CommandContext<ServerCommandSource> context,
+    public CompletableFuture<Suggestions> getSuggestions(CommandContext<S> context,
             SuggestionsBuilder builder) throws CommandSyntaxException {
         for (T val : collection) {
             builder.suggest(mappingFunction.apply(val));
@@ -37,7 +37,7 @@ public class CollectionSuggestionProvider<T> implements SuggestionProvider<Serve
     /**
      * Create a collection-backed suggestion provider that uses an object's native <code>toString</code> method.
      */
-    public static <T> CollectionSuggestionProvider<T> toStringProvider(Collection<T> collection) {
+    public static <T, S extends CommandSource> CollectionSuggestionProvider<T, S> toStringProvider(Collection<T> collection) {
         return new CollectionSuggestionProvider<>(collection, Object::toString);
     }
 }

@@ -207,7 +207,7 @@ public class SimpleServerProperties {
     }
 
     private static void writeNullable(PacketByteBuf buffer, Enum<?> enumVal) {
-        writeNullable(buffer, enumVal, (buf, v) -> buf.writeEnumConstant(null));
+        writeNullable(buffer, enumVal, (buf, v) -> buf.writeEnumConstant(v));
     }
 
     private static <T> T readNullable(PacketByteBuf buffer, Function<PacketByteBuf, T> reader) {
