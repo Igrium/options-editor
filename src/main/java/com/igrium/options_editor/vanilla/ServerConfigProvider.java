@@ -16,13 +16,13 @@ public class ServerConfigProvider implements ConfigProvider<SimpleServerProperti
 
     @Override
     public void serialize(PacketByteBuf buf, SimpleServerProperties config) {
-        // config.serialize(buf);
+        config.serialize(buf);
     }
 
     @Override
     public SimpleServerProperties deserialize(PacketByteBuf buf) {
         SimpleServerProperties props = new SimpleServerProperties();
-        // props.deserialize(buf);
+        props.deserialize(buf);
         return props;
     }
 

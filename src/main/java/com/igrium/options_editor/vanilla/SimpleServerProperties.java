@@ -71,7 +71,9 @@ public class SimpleServerProperties {
         writeNullable(buffer, allowFlight);
         writeNullable(buffer, motd);
         writeNullable(buffer, forceGameMode);
+        writeNullable(buffer, enforceWhitelist);
         writeNullable(buffer, difficulty);
+        writeNullable(buffer, gameMode);
         writeNullable(buffer, levelName);
         writeNullable(buffer, hardcore);
         writeNullable(buffer, allowNether);
@@ -110,7 +112,9 @@ public class SimpleServerProperties {
         allowFlight             = readNullableBoolean(buffer);
         motd                    = readNullableString(buffer);
         forceGameMode           = readNullableBoolean(buffer);
+        enforceWhitelist        = readNullableBoolean(buffer);
         difficulty              = readNullableEnum(buffer, Difficulty.class);
+        gameMode                = readNullableEnum(buffer, GameMode.class);
         levelName               = readNullableString(buffer);
         hardcore                = readNullableBoolean(buffer);
         allowNether             = readNullableBoolean(buffer);
@@ -135,6 +139,7 @@ public class SimpleServerProperties {
         resourcePackSha1        = readNullableString(buffer);
         requireResourcePack     = readNullableBoolean(buffer);
         playerIdleTimeout       = readNullableInteger(buffer);
+        whiteList               = readNullableBoolean(buffer);
         enforceSecureProfile    = readNullableBoolean(buffer);
         logIps                  = readNullableBoolean(buffer);
     }
