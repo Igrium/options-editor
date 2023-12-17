@@ -13,8 +13,8 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import com.igrium.options_editor.util.Timer;
-import com.igrium.options_editor.util.TimerProvider;
+import com.igrium.options_editor.util.timer.Timer;
+import com.igrium.options_editor.util.timer.TimerProvider;
 
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.profiler.Profiler;

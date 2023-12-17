@@ -1,4 +1,4 @@
-package com.igrium.options_editor.util;
+package com.igrium.options_editor.util.timer;
 
 public class Timer {
     public int timeLeft;

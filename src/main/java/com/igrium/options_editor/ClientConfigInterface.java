@@ -8,7 +8,7 @@ import java.util.concurrent.CompletableFuture;
 import com.igrium.options_editor.core.ConfigProvider;
 import com.igrium.options_editor.net.OpenConfigAcknowledgeC2SPacket;
 import com.igrium.options_editor.net.OpenConfigS2CPacket;
-import com.igrium.options_editor.util.Timers;
+import com.igrium.options_editor.util.timer.Timers;
 
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.server.MinecraftServer;
