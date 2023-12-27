@@ -2,107 +2,71 @@ package com.igrium.options_editor.options;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Stream;
 
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtElement;
-import net.minecraft.nbt.NbtList;
-import net.minecraft.util.Identifier;
+import net.minecraft.network.PacketByteBuf;
 
+/**
+ * Holds deserialized option values in a standardized way.
+ */
 public class OptionHolder {
+    public static final class OptionCategoryEntry {
 
-    public static record OptionEntry<T>(String name, Option<T> option) {}
-
-    public static record OptionCategory(String name, List<OptionEntry<?>> options) {
-        public OptionCategory(String name) {
-            this(name, new ArrayList<>());
+        public OptionCategoryEntry(String name, OptionCategory category) {
+            setName(name);
+            setCategory(category);
         }
 
-        public <T> void addOption(String name, OptionType<T> type, T value) {
-            Option<T> option = new Option<T>(type, value);
-            OptionEntry<T> entry = new OptionEntry<>(name, option);
-            options.add(entry);
+        private String name = "";
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = Objects.requireNonNull(name);
+        }
+
+        private OptionCategory category;
+
+        public OptionCategory getCategory() {
+            return category;
+        }
+
+        public void setCategory(OptionCategory category) {
+            this.category = Objects.requireNonNull(category);
         }
     }
 
-    public final List<OptionCategory> categories = new ArrayList<>();
-    
-    public NbtList writeNbt() {
-        NbtList list = new NbtList();
-        for (OptionCategory category : categories) {
-            list.add(IO.writeCategory(category));
-        }
-        return list;
+    private final List<OptionCategoryEntry> categories = new ArrayList<>();
+
+    public List<OptionCategoryEntry> getCategories() {
+        return categories;
     }
 
-    public OptionHolder readNbt(NbtList list) {
+    public Stream<OptionCategory> getCategoryStream() {
+        return categories.stream().map(v -> v.getCategory());
+    }
+
+    public void writeBuffer(PacketByteBuf buf) {
+        buf.writeShort(categories.size());
+        for (OptionCategoryEntry entry : categories) {
+            buf.writeString(entry.getName());
+            entry.getCategory().writeBuffer(buf);
+        }
+    }
+
+    public void readBuffer(PacketByteBuf buf) {
         categories.clear();
-        for (NbtElement element : list) {
-            categories.add(IO.readCategory((NbtCompound) element));
-        }
-        return this;
-    }
+        int size = buf.readShort();
 
-    public static class IO {
-        public static <T> NbtCompound writeOptionEntry(OptionEntry<T> entry) {
-            NbtCompound compound = new NbtCompound();
-            compound.putString("name", entry.name());
+        for (int i = 0; i < size; i++) {
+            String name = buf.readString();
+            OptionCategory cat = new OptionCategory();
+            cat.readBuffer(buf);
 
-            Option<T> option = entry.option();
-
-            Identifier typeId = OptionType.REGISTRY.getId(option.getType());
-            if (typeId == null) {
-                throw new RuntimeException("Unregistered option type: " + option.getType());
-            }
-            compound.putString("type", typeId.toString());
-
-            T val = option.getValue();
-            compound.put("val", option.getType().toNbt(val));
-
-            return compound;
-        }
-
-        public static OptionEntry<?> readOptionEntry(NbtCompound compound) {
-            String name = compound.getString("name");
-
-            Identifier typeId = new Identifier(compound.getString("type"));
-            OptionType<?> type = OptionType.REGISTRY.get(typeId);
-            if (type == null) {
-                throw new RuntimeException("Unknown option type: " + typeId);
-            }
-            
-            return readOptionValue(null, name, compound.get("val"));
-        }
-
-        private static <T> OptionEntry<T> readOptionValue(OptionType<T> type, String name, NbtElement element) {
-            T val = type.fromNbt(element);
-            Option<T> option = new Option<T>(type, val);
-            return new OptionEntry<>(name, option);
-        }
-
-        public static NbtCompound writeCategory(OptionCategory category) {
-            NbtCompound compound = new NbtCompound();
-            compound.putString("name", category.name());
-
-            NbtList options = new NbtList();
-            for (OptionEntry<?> entry : category.options()) {
-                options.add(writeOptionEntry(entry));
-            }
-
-            compound.put("options", options);
-            return compound;
-        }
-
-        public static OptionCategory readCategory(NbtCompound compound) {
-            String name = compound.getString("name");
-            NbtList options = compound.getList("options", NbtElement.COMPOUND_TYPE);
-
-            List<OptionEntry<?>> list = new ArrayList<>(options.size());
-            for (NbtElement element : options) {
-                OptionEntry<?> option = readOptionEntry((NbtCompound) element);
-                list.add(option);
-            }
-
-            return new OptionCategory(name, list);
+            categories.add(new OptionCategoryEntry(name, cat));
         }
     }
 }

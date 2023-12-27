@@ -1,26 +1,15 @@
 package com.igrium.options_editor.options;
 
-public class Option<T> {
+import net.minecraft.network.PacketByteBuf;
 
-    private final OptionType<T> type;
-    private T value;
+public record Option<T>(OptionType<T> type, T value) {
 
-    public Option(OptionType<T> type, T value) {
-        this.type = type;
-        this.value = value;
+    /**
+     * Write this option's value to a buffer. Does <em>not</em> save option type ID.
+     * @param buf Buffer to write to.
+     * @see OptionType#writeOption(Option, PacketByteBuf)
+     */
+    public void write(PacketByteBuf buf) {
+        type.write(value, buf);
     }
-
-    public OptionType<T> getType() {
-        return type;
-    }
-
-    public T getValue() {
-        return value;
-    }
-
-    public void setValue(T value) {
-        this.value = value;
-    }
-    
-
 }

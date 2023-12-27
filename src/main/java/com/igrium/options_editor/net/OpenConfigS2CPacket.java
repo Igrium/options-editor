@@ -5,9 +5,7 @@ import com.igrium.options_editor.options.OptionProvider;
 
 import net.fabricmc.fabric.api.networking.v1.FabricPacket;
 import net.fabricmc.fabric.api.networking.v1.PacketType;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtElement;
-import net.minecraft.nbt.NbtList;
+
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.util.Identifier;
 
@@ -15,7 +13,7 @@ public class OpenConfigS2CPacket implements FabricPacket {
 
     public static final PacketType<OpenConfigS2CPacket> TYPE = PacketType
             .create(new Identifier("options-editor:open_config"), OpenConfigS2CPacket::new);
-
+    
     public final OptionProvider provider;
     public final OptionHolder contents;
     public final int screenId;
@@ -27,33 +25,31 @@ public class OpenConfigS2CPacket implements FabricPacket {
     }
 
     public OpenConfigS2CPacket(PacketByteBuf buf) {
-        screenId = buf.readInt();
+        screenId = buf.readShort();
 
         Identifier providerId = buf.readIdentifier();
         provider = OptionProvider.REGISTRY.get(providerId);
         if (provider == null) {
-            throw new RuntimeException("Unknown option provider: " + providerId);
+            throw new IllegalStateException("Unknown option provider: " + providerId);
         }
-        
-        NbtCompound nbt = buf.readNbt();
-        NbtList cats = nbt.getList("cats", NbtElement.COMPOUND_TYPE);
-        contents = new OptionHolder().readNbt(cats);
+
+        contents = new OptionHolder();
+        contents.readBuffer(buf);
     }
 
     @Override
     public void write(PacketByteBuf buf) {
-        buf.writeInt(screenId);
+        buf.writeShort(screenId);
 
         Identifier providerId = OptionProvider.REGISTRY.getId(provider);
         if (providerId == null) {
-            throw new RuntimeException("Unregistered option provider: " + providerId);
+            throw new IllegalStateException("Unregistered option provider: " + providerId);
         }
         buf.writeIdentifier(providerId);
 
-        NbtCompound nbt = new NbtCompound();
-        nbt.put("cats", contents.writeNbt());
+        contents.writeBuffer(buf);
     }
-
+    
     @Override
     public PacketType<?> getType() {
         return TYPE;

@@ -8,7 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.igrium.options_editor.cmd.ConfigCommand;
-import com.igrium.options_editor.core.ConfigProviders;
+import com.igrium.options_editor.options.OptionProviders;
 import com.igrium.options_editor.options.OptionTypes;
 
 public class OptionsEditor implements ModInitializer {
@@ -19,7 +19,7 @@ public class OptionsEditor implements ModInitializer {
 
     @Override
     public void onInitialize() {
-        ConfigProviders.registerDefaults();
+        OptionProviders.registerDefaults();
         OptionTypes.registerDefaults();
 
         CommandRegistrationCallback.EVENT.register(ConfigCommand::register);

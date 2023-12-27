@@ -82,7 +82,7 @@ public class ClientConfigInterface {
         activeScreens.remove(player);
 
         int screenId = nextId;
-        OptionHolder current = options.load(server);
+        OptionHolder current = options.obtain(server);
 
         CompletableFuture<ScreenOpenedResponse> callback = new CompletableFuture<>();
 
