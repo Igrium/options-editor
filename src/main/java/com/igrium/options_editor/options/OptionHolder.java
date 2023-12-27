@@ -1,6 +1,7 @@
 package com.igrium.options_editor.options;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
@@ -39,7 +40,25 @@ public class OptionHolder {
         }
     }
 
-    private final List<OptionCategoryEntry> categories = new ArrayList<>();
+    private String name = "";
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = Objects.requireNonNull(name);
+    }
+
+    private final List<OptionCategoryEntry> categories;
+
+    public OptionHolder() {
+        categories = new ArrayList<>();
+    }
+
+    public OptionHolder(Collection<? extends OptionCategoryEntry> categories) {
+        this.categories = new ArrayList<>(categories);
+    }
 
     public List<OptionCategoryEntry> getCategories() {
         return categories;

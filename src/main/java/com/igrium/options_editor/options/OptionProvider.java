@@ -18,7 +18,7 @@ public interface OptionProvider {
      * Read the values in an option holder and apply them to the game.
      * @param holder Option holder to read.
      */
-    public void apply(OptionHolder holder);
+    public void apply(OptionHolder holder, MinecraftServer server);
 
     public static final Registry<OptionProvider> REGISTRY = FabricRegistryBuilder
             .<OptionProvider>createSimple(RegistryKey.ofRegistry(new Identifier("options-editor:option-providers")))

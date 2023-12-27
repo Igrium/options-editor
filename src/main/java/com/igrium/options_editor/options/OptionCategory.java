@@ -1,6 +1,7 @@
 package com.igrium.options_editor.options;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -15,7 +16,15 @@ public class OptionCategory {
 
     }
 
-    private final List<OptionEntry<?>> options = new ArrayList<>();
+    private final List<OptionEntry<?>> options;
+
+    public OptionCategory() {
+        options = new ArrayList<>();
+    }
+
+    public OptionCategory(Collection<? extends OptionEntry<?>> entries) {
+        options = new ArrayList<>(entries);
+    }
 
     /**
      * Get a modifiable list of all options in this category, kept with their respective names.

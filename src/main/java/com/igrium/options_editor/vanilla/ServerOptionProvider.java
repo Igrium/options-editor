@@ -15,7 +15,7 @@ public class ServerOptionProvider implements OptionProvider {
     }
 
     @Override
-    public void apply(OptionHolder holder) {
+    public void apply(OptionHolder holder, MinecraftServer server) {
 
     }
     
