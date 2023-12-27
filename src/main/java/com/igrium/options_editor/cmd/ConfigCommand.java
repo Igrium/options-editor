@@ -6,8 +6,8 @@ import static com.igrium.options_editor.cmd.ProtoArgumentTypes.*;
 
 import com.igrium.options_editor.ClientConfigInterface;
 import com.igrium.options_editor.ClientConfigInterface.ScreenOpenedResponse;
-import com.igrium.options_editor.core.ConfigProvider;
-import com.igrium.options_editor.core.ConfigProviders;
+
+import com.igrium.options_editor.options.OptionProvider;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
@@ -26,7 +26,7 @@ public class ConfigCommand {
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess registryAccess, CommandManager.RegistrationEnvironment environment) {
         dispatcher.register(literal("config").requires(source -> source.hasPermissionLevel(3)).then(
             literal("edit").then(
-                identifierArgument("id", ConfigProviders.REGISTRY.getIds()).executes(ConfigCommand::editConfig)
+                identifierArgument("id", OptionProvider.REGISTRY.getIds()).executes(ConfigCommand::editConfig)
             )
         ));
     }
@@ -35,15 +35,15 @@ public class ConfigCommand {
 
     public static int editConfig(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
         ServerPlayerEntity player = context.getSource().getPlayerOrThrow();
-        Identifier configType = IdentifierArgumentType.getIdentifier(context, "id");
+        Identifier optionType = IdentifierArgumentType.getIdentifier(context, "id");
 
-        ConfigProvider<?> provider = ConfigProviders.REGISTRY.get(configType);
+        OptionProvider provider = OptionProvider.REGISTRY.get(optionType);
         if (provider == null) {
-            throw UNKNOWN_CONFIG.create(configType);
+            throw UNKNOWN_CONFIG.create(optionType);
         }
 
         try {
-            ClientConfigInterface.getInstance(player.getServer()).openConfigScreen(player, provider).thenAccept(res -> {
+            ClientConfigInterface.getInstance(player.getServer()).openOptionScreen(player, provider).thenAccept(res -> {
                 if (res == ScreenOpenedResponse.SUCCESS) {
                     context.getSource().sendFeedback(() -> Text.literal("Opened config screen on client."), false);
                 } else if (res == ScreenOpenedResponse.FAILED) {

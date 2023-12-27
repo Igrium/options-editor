@@ -5,9 +5,10 @@ import java.util.Map;
 import java.util.WeakHashMap;
 import java.util.concurrent.CompletableFuture;
 
-import com.igrium.options_editor.core.ConfigProvider;
 import com.igrium.options_editor.net.OpenConfigAcknowledgeC2SPacket;
 import com.igrium.options_editor.net.OpenConfigS2CPacket;
+import com.igrium.options_editor.options.OptionHolder;
+import com.igrium.options_editor.options.OptionProvider;
 import com.igrium.options_editor.util.timer.Timers;
 
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
@@ -15,7 +16,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
 
 public class ClientConfigInterface {
-    public static final int RESPONSE_TIMEOUT = 60;
+    public static final int RESPONSE_TIMEOUT = 20;
 
     private final MinecraftServer server;
 
@@ -54,21 +55,43 @@ public class ClientConfigInterface {
      * @return A future that completes when the client responds with whether the
      *         screen could be opened.
      */
-    public <T> CompletableFuture<ScreenOpenedResponse> openConfigScreen(ServerPlayerEntity player, ConfigProvider<T> config) {
+    // public CompletableFuture<ScreenOpenedResponse> openConfigScreen(ServerPlayerEntity player, OptionProvider config) {
+    //     // queuedScreens.remove(player);
+    //     // activeScreens.remove(player);
+
+    //     // int screenId = nextId;
+    //     // T current = config.load(server);
+
+    //     // CompletableFuture<ScreenOpenedResponse> callback = new CompletableFuture<>();
+
+    //     // ServerPlayNetworking.send(player, new OpenConfigS2CPacket<T>(config, current, screenId));
+    //     // queuedScreens.put(player, new QueuedScreen(screenId, callback));
+
+    //     // Timers.timeout(server, RESPONSE_TIMEOUT).thenRun(() -> {
+    //     //     QueuedScreen queued = queuedScreens.remove(player);
+    //     //     if (queued != null && queued.screenId() == screenId) {
+    //     //         queued.callback().complete(ScreenOpenedResponse.NO_RESPONSE);
+    //     //     }
+    //     // });
+
+    //     // return callback;
+    // }
+
+    public CompletableFuture<ScreenOpenedResponse> openOptionScreen(ServerPlayerEntity player, OptionProvider options) {
         queuedScreens.remove(player);
         activeScreens.remove(player);
 
         int screenId = nextId;
-        T current = config.load(server);
+        OptionHolder current = options.load(server);
 
         CompletableFuture<ScreenOpenedResponse> callback = new CompletableFuture<>();
 
-        ServerPlayNetworking.send(player, new OpenConfigS2CPacket<T>(config, current, screenId));
+        ServerPlayNetworking.send(player, new OpenConfigS2CPacket(options, current, screenId));
         queuedScreens.put(player, new QueuedScreen(screenId, callback));
 
         Timers.timeout(server, RESPONSE_TIMEOUT).thenRun(() -> {
             QueuedScreen queued = queuedScreens.remove(player);
-            if (queued != null && queued.screenId() == screenId) {
+            if (queued != null && queued.screenId == screenId) {
                 queued.callback().complete(ScreenOpenedResponse.NO_RESPONSE);
             }
         });
@@ -80,8 +103,6 @@ public class ClientConfigInterface {
         QueuedScreen queued = queuedScreens.get(player);
         if (queued == null || packet.screenId != queued.screenId()) {
             throw new IllegalStateException("Improper screen ID.");
-            // player.networkHandler.disconnect(Text.literal("Improper screen ID."));
-            // return;
         }
         activeScreens.put(player, queued.screenId());
 
