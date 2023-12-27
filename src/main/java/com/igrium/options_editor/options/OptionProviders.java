@@ -1,9 +1,11 @@
 package com.igrium.options_editor.options;
 
+import com.igrium.options_editor.vanilla.GamerulesOptionProvider;
+
 public class OptionProviders {
 
     // public static final OptionProvider SERVER = OptionProvider.register("minecraft:server", new ServerOptionProvider());
-    public static final OptionProvider GAMERULES = OptionProvider.register("minecraft:gamerules", null);
+    public static final OptionProvider GAMERULES = OptionProvider.register("minecraft:gamerules", new GamerulesOptionProvider());
 
     // empty for classloader
     public static void registerDefaults() {

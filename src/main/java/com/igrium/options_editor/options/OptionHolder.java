@@ -2,9 +2,14 @@ package com.igrium.options_editor.options;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Stream;
+
+import com.igrium.options_editor.options.OptionCategory.OptionEntry;
+import com.mojang.logging.LogUtils;
 
 import net.minecraft.network.PacketByteBuf;
 
@@ -41,6 +46,8 @@ public class OptionHolder {
     }
 
     private String name = "";
+
+    private Map<String, Option<?>> index = new HashMap<>();
 
     public String getName() {
         return name;
@@ -87,5 +94,38 @@ public class OptionHolder {
 
             categories.add(new OptionCategoryEntry(name, cat));
         }
+    }
+
+    public void index() throws IllegalStateException {
+        index.clear();
+        for (OptionCategoryEntry cat : categories) {
+            for (OptionEntry<?> entry : cat.category.getOptions()) {
+                if (index.put(entry.id(), entry.option()) != null) {
+                    throw new IllegalStateException("Duplicate option ID: " + entry.id());
+                }
+            }
+        }
+    }
+
+    public Option<?> get(String id) {
+        Option<?> option = index.get(id);
+        if (option != null) return option;
+
+        LogUtils.getLogger().warn("Option '%s' is not present in the index. Searching manually...".formatted(id));
+
+        for (OptionCategoryEntry cat : categories) {
+            for (OptionEntry<?> entry : cat.category.getOptions()) {
+                if (entry.id().equals(id)) {
+                    return entry.option();
+                }
+            }
+        }
+
+        return null;
+    }
+
+    public <T> T getValue(String id, Class<T> type) {
+        Option<?> option = get(id);
+        return option != null ? type.cast(option.value()) : null;
     }
 }

@@ -5,6 +5,7 @@ import com.igrium.options_editor.options.OptionType;
 
 public class OptionBuilder<T> {
     private OptionType<T> type;
+    protected String id;
     protected String name;
     private T value;
 
@@ -15,6 +16,11 @@ public class OptionBuilder<T> {
 
     public OptionBuilder<T> name(String name) {
         this.name = name;
+        return this;
+    }
+
+    public OptionBuilder<T> id(String id) {
+        this.id = id;
         return this;
     }
 
@@ -29,6 +35,7 @@ public class OptionBuilder<T> {
 
     public Option<T> build() {
         if (type == null) throw new IllegalStateException("Option type must be set.");
+        if (id == null) throw new IllegalStateException("Option ID must be set.");
         if (name == null) throw new IllegalStateException("Option name must be set.");
         if (value == null) throw new IllegalStateException("Default value must be set.");
 

@@ -3,7 +3,6 @@ package com.igrium.options_editor.vanilla;
 import com.igrium.options_editor.builder.CategoryBuilder;
 import com.igrium.options_editor.builder.OptionBuilder;
 import com.igrium.options_editor.builder.OptionHolderBuilder;
-import com.igrium.options_editor.options.OptionCategory;
 import com.igrium.options_editor.options.OptionHolder;
 import com.igrium.options_editor.options.OptionProvider;
 import com.igrium.options_editor.options.OptionTypes;
@@ -19,10 +18,14 @@ public class GamerulesOptionProvider implements OptionProvider {
 
         return new OptionHolderBuilder().name("Game Rules").category(
             new CategoryBuilder().name("gamerules").option(
-                OptionBuilder.create(OptionTypes.BOOLEAN).name("Mob Griefing")
+                OptionBuilder.create(OptionTypes.BOOLEAN)
+                        .name("Mob Griefing")
+                        .id("mobGriefing")
                         .value(gamerules.getBoolean(GameRules.DO_MOB_GRIEFING))
             ).option(
-                OptionBuilder.create(OptionTypes.BOOLEAN).name("Keep Inventory")
+                OptionBuilder.create(OptionTypes.BOOLEAN)
+                        .name("Keep Inventory")
+                        .id("keepInventory")
                         .value(gamerules.getBoolean(GameRules.KEEP_INVENTORY))
             )
         ).build();
@@ -30,13 +33,9 @@ public class GamerulesOptionProvider implements OptionProvider {
 
     @Override
     public void apply(OptionHolder holder, MinecraftServer server) {
-        OptionCategory category = holder.getCategories().get(0).getCategory();
-        boolean mobGriefing = (Boolean) category.getOptions().get(0).option().value();
-        boolean keepInventory = (Boolean) category.getOptions().get(0).option().value();
-
         GameRules gameRules = server.getGameRules();
-        gameRules.get(GameRules.DO_MOB_GRIEFING).set(mobGriefing, server);
-        gameRules.get(GameRules.KEEP_INVENTORY).set(keepInventory, server);
+        gameRules.get(GameRules.DO_MOB_GRIEFING).set(holder.getValue("mobGriefing", Boolean.class), server);
+        gameRules.get(GameRules.KEEP_INVENTORY).set(holder.getValue("keepInventory", Boolean.class), server);
     }
     
 }

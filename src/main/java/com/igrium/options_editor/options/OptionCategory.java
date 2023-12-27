@@ -12,7 +12,7 @@ import net.minecraft.network.PacketByteBuf;
  * A category of options.
  */
 public class OptionCategory {
-    public static record OptionEntry<T>(String name, Option<T> option) {
+    public static record OptionEntry<T>(String id, String name, Option<T> option) {
 
     }
 
@@ -45,6 +45,7 @@ public class OptionCategory {
     public void writeBuffer(PacketByteBuf buf) {
         buf.writeShort(options.size());
         for (OptionEntry<?> entry : options) {
+            buf.writeString(entry.id());
             buf.writeString(entry.name());
             OptionType.writeOption(entry.option(), buf);
         }
@@ -59,9 +60,10 @@ public class OptionCategory {
         int length = buf.readShort();
 
         for (int i = 0; i < length; i++) {
+            String id = buf.readString();
             String name = buf.readString();
             Option<?> option = OptionType.readOption(buf);
-            options.add(new OptionEntry<>(name, option));
+            options.add(new OptionEntry<>(id, name, option));
         }
     }
 }

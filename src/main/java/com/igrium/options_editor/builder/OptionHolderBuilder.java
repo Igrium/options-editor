@@ -24,6 +24,7 @@ public class OptionHolderBuilder {
         var list = categories.stream().map(c -> new OptionHolder.OptionCategoryEntry(c.name, c.build())).toList();
         OptionHolder holder = new OptionHolder(list);
         holder.setName(name);
+        holder.index();
         return holder;
     }
 }

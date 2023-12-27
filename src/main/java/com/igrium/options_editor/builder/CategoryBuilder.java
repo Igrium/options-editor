@@ -22,7 +22,7 @@ public class CategoryBuilder {
     public OptionCategory build() {
         if (name == null) throw new IllegalStateException("Category name must be set.");
 
-        var list = options.stream().map(val -> new OptionCategory.OptionEntry<>(val.name, val.build())).toList();
+        var list = options.stream().map(val -> new OptionCategory.OptionEntry<>(val.id, val.name, val.build())).toList();
         return new OptionCategory(list);
     }
 }
