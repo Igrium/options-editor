@@ -25,6 +25,7 @@ public class UpdateConfigC2SPacket implements FabricPacket {
     public UpdateConfigC2SPacket(PacketByteBuf buf) {
         screenId = buf.readInt();
         contents = buf.readOptional(OptionHolder::fromBuffer);
+        contents.ifPresent(OptionHolder::index);
     }
 
     @Override

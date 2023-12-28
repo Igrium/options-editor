@@ -10,7 +10,6 @@ public class ServerOptionProvider implements OptionProvider {
     @Override
     public OptionHolder obtain(MinecraftServer server) {
         return new OptionHolder();
-        // // TODO Auto-generated method stub
         // throw new UnsupportedOperationException("Unimplemented method 'obtain'");
     }
 
