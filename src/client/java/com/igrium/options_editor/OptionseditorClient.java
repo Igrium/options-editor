@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.WeakHashMap;
 
 import com.igrium.options_editor.client.ClientOptionHolder;
+import com.igrium.options_editor.client.ConfigFieldTypes;
 import com.igrium.options_editor.client.events.ScreenRemovedCallback;
 import com.igrium.options_editor.net.OpenConfigAcknowledgeC2SPacket;
 import com.igrium.options_editor.net.OpenConfigS2CPacket;
@@ -30,6 +31,7 @@ public class OptionsEditorClient implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
         instance = this;
+        ConfigFieldTypes.registerDefaults();
         ClientPlayNetworking.registerGlobalReceiver(OpenConfigS2CPacket.TYPE, this::onOpenConfig);
         ScreenRemovedCallback.EVENT.register(this::onScreenRemoved);
     }
