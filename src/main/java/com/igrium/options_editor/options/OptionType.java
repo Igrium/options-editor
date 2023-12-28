@@ -27,7 +27,7 @@ public interface OptionType<T> {
     }
 
     public static void writeOption(Option<?> option, PacketByteBuf buf) {
-        Identifier id = REGISTRY.getId(option.type());
+        Identifier id = REGISTRY.getId(option.getType());
         if (id == null) {
             throw new IllegalStateException("Option has not been registered: " + option);
         }

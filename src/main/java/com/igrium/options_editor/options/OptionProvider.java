@@ -21,7 +21,7 @@ public interface OptionProvider {
     public void apply(OptionHolder holder, MinecraftServer server);
 
     public static final Registry<OptionProvider> REGISTRY = FabricRegistryBuilder
-            .<OptionProvider>createSimple(RegistryKey.ofRegistry(new Identifier("options-editor:option-providers")))
+            .<OptionProvider>createSimple(RegistryKey.ofRegistry(new Identifier("options-editor:option_providers")))
             .buildAndRegister();
     
     public static <T extends OptionProvider> T register(Identifier id, T provider) {

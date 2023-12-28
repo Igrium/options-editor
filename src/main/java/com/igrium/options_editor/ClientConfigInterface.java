@@ -86,7 +86,7 @@ public class ClientConfigInterface {
 
         CompletableFuture<ScreenOpenedResponse> callback = new CompletableFuture<>();
 
-        ServerPlayNetworking.send(player, new OpenConfigS2CPacket(options, current, screenId));
+        ServerPlayNetworking.send(player, new OpenConfigS2CPacket(current, screenId));
         queuedScreens.put(player, new QueuedScreen(screenId, callback));
 
         Timers.timeout(server, RESPONSE_TIMEOUT).thenRun(() -> {

@@ -45,6 +45,12 @@ public class OptionHolder {
         }
     }
 
+    public static OptionHolder fromBuffer(PacketByteBuf buf) {
+        OptionHolder holder = new OptionHolder();
+        holder.readBuffer(buf);
+        return holder;
+    }
+
     private String name = "";
 
     private Map<String, Option<?>> index = new HashMap<>();
@@ -126,6 +132,6 @@ public class OptionHolder {
 
     public <T> T getValue(String id, Class<T> type) {
         Option<?> option = get(id);
-        return option != null ? type.cast(option.value()) : null;
+        return option != null ? type.cast(option.getValue()) : null;
     }
 }

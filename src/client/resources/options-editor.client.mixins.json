@@ -1,9 +1,8 @@
 {
 	"required": true,
-	"package": "com.igrium.options_editor.mixin.client",
+	"package": "com.igrium.options_editor.client.mixin",
 	"compatibilityLevel": "JAVA_17",
 	"client": [
-		"ExampleClientMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1
