@@ -9,6 +9,7 @@ import net.minecraft.util.Identifier;
 public interface OptionType<T> {
     public T read(PacketByteBuf buf);
     public void write(T val, PacketByteBuf buf);
+    public Class<? extends T> getType();
 
     default Option<T> create(T val) {
         return new Option<>(this, val);

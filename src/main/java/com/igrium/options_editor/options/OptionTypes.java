@@ -34,6 +34,10 @@ public final class OptionTypes {
             buf.writeBoolean(val);
         }
         
+        @Override
+        public Class<? extends Boolean> getType() {
+            return Boolean.class;
+        }
     }
 
     private static class IntOptionType implements OptionType<Integer> {
@@ -45,6 +49,11 @@ public final class OptionTypes {
         @Override
         public void write(Integer val, PacketByteBuf buf) {
             buf.writeInt(val);
+        }
+
+        @Override
+        public Class<? extends Integer> getType() {
+            return Integer.class;
         }
     }
 
@@ -58,6 +67,11 @@ public final class OptionTypes {
         public void write(Long val, PacketByteBuf buf) {
             buf.writeLong(val);
         }
+
+        @Override
+        public Class<? extends Long> getType() {
+            return Long.class;
+        }
     }
 
     private static class FloatOptionType implements OptionType<Float> {
@@ -70,6 +84,11 @@ public final class OptionTypes {
         public void write(Float val, PacketByteBuf buf) {
             buf.writeFloat(val);
         }
+
+        @Override
+        public Class<? extends Float> getType() {
+            return Float.class;
+        }
     }
 
     private static class DoubleOptionType implements OptionType<Double> {
@@ -81,6 +100,11 @@ public final class OptionTypes {
         @Override
         public void write(Double val, PacketByteBuf buf) {
             buf.writeDouble(val);
+        }
+
+        @Override
+        public Class<? extends Double> getType() {
+            return Double.class;
         }
     }
 
@@ -101,6 +125,11 @@ public final class OptionTypes {
             buf.writeInt(val.min);
             buf.writeInt(val.max);
         }
+
+        @Override
+        public Class<? extends IntSlider> getType() {
+            return IntSlider.class;
+        }
     }
 
     public static record LongSlider(long value, long min, long max) {}
@@ -119,6 +148,11 @@ public final class OptionTypes {
             buf.writeLong(val.value);
             buf.writeLong(val.min);
             buf.writeLong(val.max);
+        }
+
+        @Override
+        public Class<? extends LongSlider> getType() {
+            return LongSlider.class;
         }
     }
 
@@ -147,6 +181,11 @@ public final class OptionTypes {
             int ordinal = buf.readShort();
             String[] values = NetUtils.readStringArray(buf);
             return new EnumValues(values, ordinal);
+        }
+
+        @Override
+        public Class<? extends EnumValues> getType() {
+            return EnumValues.class;
         }
     }
     

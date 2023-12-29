@@ -5,7 +5,8 @@
 	"mixins": [
 		"AbstractPropertiesHandlerAccessor",
 		"MinecraftDedicatedServerAccessor",
-		"MinecraftServerMixin"
+		"MinecraftServerMixin",
+		"GameRulesAccessor"
 	],
 	"injectors": {
 		"defaultRequire": 1
