@@ -16,6 +16,7 @@ public final class OptionTypes {
     public static final OptionType<IntSlider> INT_SLIDER = OptionType.register("options-editor:int_slider", new IntSliderOptionType());
     public static final OptionType<LongSlider> LONG_SLIDER = OptionType.register("options-editor:long_slider", new LongSliderOptionType());
     public static final OptionType<EnumValues> ENUM = OptionType.register("options-editor:enum", new EnumOptionType());
+    public static final OptionType<String> STRING = OptionType.register("options-editor:string", new StringOptionType());
 
 
     // For classloader
@@ -189,4 +190,20 @@ public final class OptionTypes {
         }
     }
     
+    private static class StringOptionType implements OptionType<String> {
+        @Override
+        public void write(String val, PacketByteBuf buf) {
+            buf.writeString(val);
+        }
+
+        @Override
+        public String read(PacketByteBuf buf) {
+            return buf.readString();
+        }
+
+        @Override
+        public Class<? extends String> getType() {
+            return String.class;
+        }
+    }
 }
