@@ -85,6 +85,10 @@ public class ClientConfigInterface {
     }
 
     protected void onRecieveUpdate(UpdateConfigC2SPacket packet, ServerPlayerEntity player) {
+        if (!mayEditConfig(player)) {
+            throw new IllegalArgumentException("Player may not update config.");
+        }
+
         OpenedScreen screen = activeScreens.get(player);
         if (screen == null || packet.screenId != screen.screenId()) {
             throw new IllegalStateException("Improper screen ID.");
@@ -107,5 +111,9 @@ public class ClientConfigInterface {
         ServerPlayNetworking.registerGlobalReceiver(UpdateConfigC2SPacket.TYPE, (packet, player, res) -> {
             getInstance(player.getServer()).onRecieveUpdate(packet, player);
         });
+    }
+
+    public static boolean mayEditConfig(ServerPlayerEntity player) {
+        return player.hasPermissionLevel(3);
     }
 }

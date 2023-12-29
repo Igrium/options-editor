@@ -52,6 +52,7 @@ public class OptionHolder {
     }
 
     private String name = "";
+    private String description = "";
 
     private Map<String, Option<?>> index = new HashMap<>();
 
@@ -61,6 +62,14 @@ public class OptionHolder {
 
     public void setName(String name) {
         this.name = Objects.requireNonNull(name);
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = Objects.requireNonNull(description);
     }
 
     private final List<OptionCategoryEntry> categories;
@@ -82,6 +91,9 @@ public class OptionHolder {
     }
 
     public void writeBuffer(PacketByteBuf buf) {
+        buf.writeString(name);
+        buf.writeString(description);
+        
         buf.writeShort(categories.size());
         for (OptionCategoryEntry entry : categories) {
             buf.writeString(entry.getName());
@@ -91,6 +103,9 @@ public class OptionHolder {
 
     public void readBuffer(PacketByteBuf buf) {
         categories.clear();
+        setName(buf.readString());
+        setDescription(buf.readString());
+
         int size = buf.readShort();
 
         for (int i = 0; i < size; i++) {

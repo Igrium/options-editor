@@ -12,6 +12,7 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.DynamicCommandExceptionType;
+import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import com.mojang.logging.LogUtils;
 
 import net.minecraft.command.CommandRegistryAccess;
@@ -31,11 +32,15 @@ public class ConfigCommand {
         ));
     }
 
-    private static DynamicCommandExceptionType UNKNOWN_CONFIG = new DynamicCommandExceptionType(id -> Text.literal("Unknown config type: " + id));
+    private static final DynamicCommandExceptionType UNKNOWN_CONFIG = new DynamicCommandExceptionType(id -> Text.literal("Unknown config type: " + id));
+    private static final SimpleCommandExceptionType NO_PERMISSION = new SimpleCommandExceptionType(Text.literal("Player does not have permission to edit config."));
 
     public static int editConfig(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
         ServerPlayerEntity player = context.getSource().getPlayerOrThrow();
         Identifier optionType = IdentifierArgumentType.getIdentifier(context, "id");
+
+        if (!ClientConfigInterface.mayEditConfig(player))
+            throw NO_PERMISSION.create();
 
         OptionProvider provider = OptionProvider.REGISTRY.get(optionType);
         if (provider == null) {
