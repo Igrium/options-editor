@@ -7,6 +7,7 @@ import com.igrium.options_editor.options.OptionTypes;
 
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.GameRules.BooleanRule;
+import net.minecraft.world.GameRules.IntRule;
 import net.minecraft.world.GameRules.Rule;
 
 public class GameRuleAdapters {
@@ -36,6 +37,7 @@ public class GameRuleAdapters {
     }
 
     public static final GameRuleAdapter<Boolean, BooleanRule> BOOLEAN = register(BooleanRule.class, new BooleanRuleAdapter());
+    public static final GameRuleAdapter<Integer, IntRule> INTEGER = register(IntRule.class, new IntRuleAdapter());
 
     private static class BooleanRuleAdapter implements GameRuleAdapter<Boolean, BooleanRule> {
 
@@ -55,4 +57,22 @@ public class GameRuleAdapters {
         }
         
     }
+
+    private static class IntRuleAdapter implements GameRuleAdapter<Integer, IntRule> {
+        @Override
+        public Integer read(IntRule rule) {
+            return rule.get();
+        }
+
+        @Override
+        public void write(Integer val, IntRule rule, MinecraftServer server) {
+            rule.set(val, server);
+        }
+
+        @Override
+        public OptionType<Integer> getType() {
+            return OptionTypes.INTEGER;
+        }
+    }
+
 }
